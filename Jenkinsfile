@@ -1,20 +1,20 @@
 pipeline {
-    agent any
+    agent any  // This will run the pipeline on any available agent
+
+    tools {
+        maven 'Maven 3.3.2'  // Make sure this Maven version/name matches what you've configured in Jenkins
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm  // This checks out the code from your SCM (e.g., GitHub).
+                checkout scm  // This checks out the code from your SCM (e.g., GitHub)
             }
         }
 
         stage('Build and Test') {
             steps {
-                script {
-                    // Here we're using the 'sh' step because it's a Unix-based command.
-                    // Use 'bat' step if you're running Jenkins on a Windows machine.
-                    sh 'mvn clean package'
-                }
+                sh 'mvn clean package'  // This will now use the Maven version specified above
             }
         }
 
@@ -26,19 +26,21 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // This is just a placeholder. Actual deployment will vary based on your application server and setup.
-                echo "Deploying application..."
+                // Your deployment steps here. Depending on where and how you deploy.
             }
         }
     }
 
     post {
-        failure {
-            // Notify developers/team about the failure. You can integrate with tools like Slack, email, etc.
-            echo "Build failed!"
+        always {
+            // Actions to always perform after stages
+            junit '**/target/test-*.xml'  // Capture any test results if you have tests
         }
-        success {
-            echo "Build succeeded!"
+
+        failure {
+            // Actions to perform on build failure
+            echo "Build failed. Please check the logs for more information."
         }
     }
 }
+
