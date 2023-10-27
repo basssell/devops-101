@@ -28,6 +28,7 @@ pipeline {
         // If not, you can remove this stage.
         stage('Deploy') {
             steps {
+                echo "deploying step"
                 // Your deployment steps here.
             }
         }
